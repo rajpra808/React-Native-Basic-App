@@ -4,7 +4,6 @@ import {Colors, LoaderScreen, View} from 'react-native-ui-lib';
 import {observer} from 'mobx-react';
 import {useNavigation} from '@react-navigation/native';
 import {NavioScreen} from 'rn-navio';
-import { runInAction } from 'mobx';
 
 import {services, useServices} from '@app/services';
 import {useStores} from '@app/stores';
@@ -13,40 +12,27 @@ import {Row} from '@app/components/row';
 import {useAppearance} from '@app/utils/hooks';
 import {BlogSection} from '@app/components/sections/BlogSection';
 
-export const Main: NavioScreen = observer(({}) => {
+export const Saved: NavioScreen = observer(({}) => {
   useAppearance();
   const navigation = useNavigation();
   const {content} = useStores();
-  const {api} = useServices();
 
   // State (local)
   const [loading, setLoading] = useState(false);
 
-  const fetchContent = async () =>{
-    setLoading(true);
-    try {
-      const data = await api.content.get();
-      runInAction(() => {
-        content.set('value', data);
-      });
-    } catch (e) {
-      console.log('[ERROR]', e);
-    } finally {
-      setLoading(false);
-    }
+  const getSavedArticles = () => {
+
   }
-
-  const getContentValue = useCallback(async () => {
-    fetchContent()
-  }, [api.content, content]);
-
-  const refresh = () => fetchContent();
+  
+  function refresh(): void {
+    console.log("Refreshed")
+}
 
   // Start
   useEffect(() => {
     configureUI();
-    getContentValue();
-  }, []);
+    getSavedArticles();
+  }, [content]);
 
   // UI Methods
   const configureUI = () => {
@@ -68,6 +54,7 @@ export const Main: NavioScreen = observer(({}) => {
   );
 });
 
-Main.options = () => ({
+Saved.options = () => ({
   title: services.t.do('home.title'),
 });
+

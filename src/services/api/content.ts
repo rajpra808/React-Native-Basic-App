@@ -18,6 +18,7 @@ export class ContentApi {
             title: entry.fields.title,
             icon: entry.fields.icon,
             description: entry.fields.description,
+            index: entry.fields.index,
             articles: [],
           };
           sectionMap.set(entry.sys.id, section);
@@ -46,6 +47,7 @@ export class ContentApi {
         locale: item.sys.locale,
 
         title: item.fields.title,
+        description: item.fields.description,
         body: resolveBody(item.fields.body),
         image: assetMap.get(item.fields.image.sys.id),
         index: item.fields.index,
@@ -57,7 +59,7 @@ export class ContentApi {
         section.articles.push(article);
       }
     })
-    
+
     const result:any = {
       sections: (<any>Object).fromEntries(sectionMap),
       articles: (<any>Object).fromEntries(articleMap)

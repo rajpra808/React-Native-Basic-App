@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {ScrollView, StyleSheet} from 'react-native';
 import {Text, View} from 'react-native-ui-lib';
 import {observer} from 'mobx-react';
@@ -11,11 +11,20 @@ import {NavioScreen} from 'rn-navio';
 import {services, useServices} from '@app/services';
 import {useAppearance} from '@app/utils/hooks';
 import { useStores } from '@app/stores';
+import { Row } from '@app/components/row';
+import { HeaderButton } from '@app/components/button';
 
 export type Params = {
   type?: 'push' | 'show';
   articleId?: string;
 };
+
+interface RenderHtmlProps {
+  contentWidth: number; // Adjust the type accordingly
+  source: any; // Adjust the type accordingly
+  tagsStyles?: Record<string, any>; // Adjust the type accordingly
+}
+
 
 const styles = StyleSheet.create({
   container: {
@@ -35,36 +44,42 @@ export const Article: NavioScreen = observer(() => {
   const {content} = useStores();
   const [data, setData] = useState({title: 'Not Updated Yet', body: {html: `
   <p style='text-align:center;'>
-    Hello World!
+    Not FOUND!
   </p>`}});
-  const [body, setBody] = useState()
   const { width } = useWindowDimensions();
-
-  
-  // const {ui} = useStores();
-
-  // State
-
-  // Methods
 
   // Start
   useEffect(() => {
-    configureUI();
     if(params.articleId) {
-      let articles = content.value["articles"];
-      console.log(articles);
-      
-      setData(articles[params.articleId]);
+      let articles = content.value["articles"]; 
+      let article = articles[params.articleId]
+      setData(article);
+      configureUI(article.title, params.articleId);
     }
-  }, [params, content]);
+  }, [params, content, navigation]);
 
+  const refresh = () =>{
+    console.log("Hello")
+  }
   // UI Methods
-  const configureUI = () => {
-    navigation.setOptions({});
+  const configureUI = (title: string, id: string) => {
+    navigation.setOptions({
+      title: title,
+      headerRight: () => (
+        <Row>
+          <HeaderButton onPress={refresh} label="Save" />
+        </Row>
+      ),
+    });
   };
+  
+  const MemoizedRenderHtml: React.FC<RenderHtmlProps> = React.memo(({ contentWidth, source, tagsStyles }) => (
+    <RenderHtml contentWidth={contentWidth} source={source} tagsStyles={tagsStyles} />
+  ));
 
+  const memoizedBody = useMemo(() => data['body'], [data['body']]);
   // UI Methods
-
+  const tagsStyles= {a: {color:'#58585A',textDecorationLine:'none', fontSize:16, fontFamily:'Montserrat-Bold',lineHeight: 23},p:{fontFamily:'Montserrat-Regular**',lineHeight: 23,color:'#58585A',fontSize:17,marginBottom:16}}
   return (
     <View flex bg-bgColor>
       <ScrollView contentInsetAdjustmentBehavior="always">
@@ -75,11 +90,17 @@ export const Article: NavioScreen = observer(() => {
               <Text>ProductId: {data["title"]}</Text>
             </View>
             <View centerV margin-s4 marginV-s3 style={styles.container}>
-              <RenderHtml
-                contentWidth={width-50}
-                source={data['body']}
-                tagsStyles={{a: {color:'#58585A',textDecorationLine:'none', fontSize:16, fontFamily:'Montserrat-Bold',lineHeight: 23},p:{fontFamily:'Montserrat-Regular**',lineHeight: 23,color:'#58585A',fontSize:17,marginBottom:16}}} 
+              <MemoizedRenderHtml
+                contentWidth={width - 50}
+                source={memoizedBody}
+                tagsStyles={tagsStyles}
               />
+
+              {/* <RenderHtml
+                contentWidth={width-50}
+                source={memoizedBody}
+                tagsStyles={tagsStyles}
+              /> */}
             </View>
           </View>
         ) : null}

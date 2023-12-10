@@ -165,11 +165,11 @@ export const getTabBarIcon =
     <Icon name={getTabIconName(tabName, focused)} size={size} color={color} />;
 
 const getTabIconName = (tabName: string, focused: boolean): IconName => {
-  if (tabName === 'MainTab') {
+  if (tabName === 'Home') {
     return focused ? 'home' : 'home-outline';
   }
-  if (tabName === 'PlaygroundTab') {
-    return focused ? 'construct' : 'construct-outline';
+  if (tabName === 'bookmarked') {
+    return focused ? 'bookmark' : 'bookmark-outline';
   }
   if (tabName === 'SettingsTab') {
     return focused ? 'settings' : 'settings-outline';

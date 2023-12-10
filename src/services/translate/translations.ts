@@ -8,6 +8,9 @@ export const en = {
   example: {
     title: 'Example',
   },
+  Home: {
+    
+  },
   section: {
     navio: {
       title: 'Navio',

@@ -1,41 +1,60 @@
-import React from 'react';
-import {Text} from 'react-native-ui-lib';
-import {useServices} from '../../services';
-import {BButton} from '../button';
+import React, { useEffect, useState } from 'react';
+import {View} from 'react-native-ui-lib';
 import {Section} from '../section';
-import {randomNum} from '../../utils/help';
-import {Row} from '../row';
+import {ArticleCard} from '../card';
+import { useStores } from '@app/stores';
+import { runInAction } from 'mobx';
 
 type Props = {};
 
-export const BlogSection: React.FC<Props> = ({}) => {
-  const {t, navio} = useServices();
+const renderArticles = (articles: any) => (
+  articles.map((article: any) => (
+    <ArticleCard
+      key={article.id}
+      id={article.id}
+      title={article.title}
+      description={article.description}
+      index = {article.index}
+      image = {article.image}
+    />
+  ))
+);
 
-  // Methods
-  const stacksPushWithParams = () =>
-    navio.N.navigate('ProductPageStack', {
-      screen: 'ProductPage',
-      params: {articleId: '791utKaPbZoCNrerX72x1C'},
-    }); // in order to pass params to a stack you will need to use react-navigation instance `navio.N` and using `.navigate()` as you would do using react-navigation.
-  
-  return (
-    <Section title={t.do('section.navio.title')}>
-      <BButton
-        flex
-        marginV-s1
-        marginR-s1
-        size="small"
-        label={t.do('section.navio.button.stacks.push_with_params')}
-        onPress={stacksPushWithParams}
-      />
+const renderSections = (data:any) => (
+  data.map((section:any) => (
+    <Section key={section.id} title={section.title}>
+      {renderArticles(section.articles)}
     </Section>
+  ))
+);
+
+
+export const BlogSection: React.FC<Props> = ({}) => {
+  const [data, setData]  = useState<any[]>([])
+  const {content} = useStores();
+
+  useEffect(() => {
+    const sections = content.value["sections"]
+    if(sections) {
+      const sectionsArray = Object.values(sections) as any[];
+      // Sort the array based on the 'index' property
+      sectionsArray.sort((a, b) => a.index - b.index);
+
+      runInAction(() => {
+        // Sort articles within each section
+        sectionsArray.forEach(section=> {
+          if (section.articles) {
+            section.articles.sort((a: { index: number; }, b: { index: number; }) => a.index - b.index);
+          }
+        });
+        
+        setData(sectionsArray)
+      });
+    }
+  }, [content]);
+  return (
+    <View>
+      {renderSections(data)}
+    </View>
   );
 };
-
-
-
-{/* <Section title="Section One">
-<View>
-  <Text> Hello World </Text>
-</View>
-</Section> */}

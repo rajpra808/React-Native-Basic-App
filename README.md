@@ -2,4 +2,7 @@
 [x] Render Article
 [x] Fetch Data from ContentFul
 [] Render image in Article
-[] Build Home Page
+[x] Build Home Page
+[x] Remove unwanted screens 
+[x] Setup tabs 
+[x] Add article name and saved button for article
