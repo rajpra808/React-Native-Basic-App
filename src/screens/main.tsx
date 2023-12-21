@@ -24,6 +24,7 @@ export const Main: NavioScreen = observer(({}) => {
 
   const fetchContent = async () =>{
     setLoading(true);
+    content.clearStoredData()
     try {
       const data = await api.content.get();
       runInAction(() => {

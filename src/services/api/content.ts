@@ -26,7 +26,7 @@ export class ContentApi {
       });
       
     const assetMap = new Map();
-    json.includes.Asset.forEach((entry: any) => {
+    json.includes?.Asset?.forEach((entry: any) => {
       const asset = {
         id: entry.sys?.id,
         title: entry.fields?.title,
@@ -40,7 +40,7 @@ export class ContentApi {
       return {html: documentToHtmlString(body)};
     }
     
-    json.items.forEach((item: any) => {
+    json?.items?.forEach((item: any) => {
       const article = {
         id: item.sys.id,
         type: item.sys.contentType.id,
@@ -59,7 +59,7 @@ export class ContentApi {
         section.articles.push(article);
       }
     })
-
+    console.log({sectionMap, articleMap, json})
     const result:any = {
       sections: (<any>Object).fromEntries(sectionMap),
       articles: (<any>Object).fromEntries(articleMap)

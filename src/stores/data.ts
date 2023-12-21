@@ -1,5 +1,5 @@
 import {makeAutoObservable} from 'mobx';
-import {hydrateStore, makePersistable} from 'mobx-persist-store';
+import {hydrateStore, makePersistable, clearPersistedStore} from 'mobx-persist-store';
 
 export class DataStore implements IStore {
   value:any = {};
@@ -27,4 +27,9 @@ export class DataStore implements IStore {
   hydrate = async (): PVoid => {
     await hydrateStore(this);
   };
+
+  async clearStoredData() {
+    console.log("*****Clearing*******")
+    await clearPersistedStore(this);
+  }
 }

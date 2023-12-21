@@ -86,9 +86,6 @@ export const Article: NavioScreen = observer(() => {
         {/* Product Page example related */}
         {!!params?.articleId ? (
           <View>
-            <View margin-s2 marginV-s2 paddingH-s3>
-              <Text>ProductId: {data["title"]}</Text>
-            </View>
             <View centerV margin-s4 marginV-s3 style={styles.container}>
               <MemoizedRenderHtml
                 contentWidth={width - 50}
